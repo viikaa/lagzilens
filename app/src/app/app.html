@@ -1,1 +1,17 @@
 <router-outlet />
+
+@if (showLoader()) {
+  <div class="boot-loader" role="status" aria-live="polite">
+    <div class="boot-loader__inner">
+      <div class="boot-loader__spinner" aria-hidden="true"></div>
+      <div class="boot-loader__text">
+        <span>Egy pillanat</span>
+        <span class="boot-loader__dots" aria-hidden="true">
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </span>
+      </div>
+    </div>
+  </div>
+}
