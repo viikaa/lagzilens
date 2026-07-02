@@ -19,5 +19,5 @@ Thumbs.db
 *.swp
 
 gas
-docs/*
+# docs/*
 index-redirect.html
