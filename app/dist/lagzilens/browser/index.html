@@ -21,9 +21,109 @@
         background-color: #1a1a2e;
       }
     }
+
+    .boot-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--boot-surface, #fefaf6);
+      color: var(--boot-fg, #1a1a2e);
+      font-family: 'Poppins', system-ui, sans-serif;
+      z-index: 9999;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .boot-loader {
+        --boot-surface: #1a1a2e;
+        --boot-fg: #f0f0f0;
+        --boot-fg-muted: #a8a29e;
+        --boot-accent: #e8c9a0;
+        --boot-ring: rgba(232, 201, 160, 0.15);
+      }
+    }
+
+    .boot-loader__inner {
+      text-align: center;
+    }
+
+    .boot-loader__spinner {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      border: 3px solid var(--boot-ring, rgba(155, 93, 115, 0.15));
+      border-top-color: var(--boot-accent, #9b5d73);
+      animation: boot-spin 1s linear infinite;
+    }
+
+    @keyframes boot-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .boot-loader__text {
+      font-family: 'Poppins', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 1.125rem;
+      color: var(--boot-fg-muted, #8b7e6a);
+      letter-spacing: 0.02em;
+    }
+
+    .boot-loader__dots {
+      display: inline-flex;
+      width: 2.5ch;
+      justify-content: flex-start;
+      white-space: nowrap;
+      margin-left: 0.2rem;
+    }
+
+    .boot-loader__dots span {
+      opacity: 0;
+      color: var(--boot-accent, #9b5d73);
+    }
+
+    .boot-loader__dots span:nth-child(1) {
+      animation: boot-dot1 1.5s steps(1) infinite;
+    }
+    .boot-loader__dots span:nth-child(2) {
+      animation: boot-dot2 1.5s steps(1) infinite;
+    }
+    .boot-loader__dots span:nth-child(3) {
+      animation: boot-dot3 1.5s steps(1) infinite;
+    }
+
+    @keyframes boot-dot1 {
+      0%, 100% { opacity: 0; }
+      25%, 75% { opacity: 1; }
+    }
+
+    @keyframes boot-dot2 {
+      0%, 25%, 100% { opacity: 0; }
+      50%, 75% { opacity: 1; }
+    }
+
+    @keyframes boot-dot3 {
+      0%, 50%, 100% { opacity: 0; }
+      75% { opacity: 1; }
+    }
   </style>
 <style>*,:before,:after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / .5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content:""}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}:root{--color-surface:#fefaf6;--color-elevated:#ffffff;--color-muted:#f5f0eb;--color-fg:#1a1a2e;--color-fg-muted:#8b7e6a;--color-fg-subtle:#b0a89e;--color-accent:#9b5d73;--color-accent-hover:#834d61;--color-on-accent:#ffffff;--color-secondary:#2d2d44;--color-secondary-hover:#3a3a52;--color-on-secondary:#f0f0f0;--color-border:#e8d5c4;--color-success:#5b7b4c;--color-error:#b45309;--color-ring:rgba(155, 93, 115, .3);--color-input-bg:#ffffff;--color-gradient-start:#9b5d73;--color-gradient-mid:#b07a8b;--color-gradient-end:#9b5d73;--color-gradient-text:#ffffff;color-scheme:light}@media(prefers-color-scheme:dark){:root{--color-surface:#1a1a2e;--color-elevated:#2d2d44;--color-muted:#252538;--color-fg:#f0f0f0;--color-fg-muted:#a8a29e;--color-fg-subtle:#6a6a80;--color-accent:#e8c9a0;--color-accent-hover:#d4b890;--color-on-accent:#1a1a2e;--color-secondary:#2d2d44;--color-secondary-hover:#3a3a52;--color-on-secondary:#e8c9a0;--color-border:rgba(155, 93, 115, .3);--color-success:#e8c9a0;--color-error:#9b5d73;--color-ring:rgba(232, 201, 160, .3);--color-input-bg:#3a3a52;--color-gradient-start:#9b5d73;--color-gradient-mid:#c49a7e;--color-gradient-end:#e8c9a0;--color-gradient-text:#1a1a2e;color-scheme:dark}}html{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:var(--color-surface);background-image:radial-gradient(ellipse at 50% -10%,color-mix(in srgb,var(--color-accent) 8%,transparent) 0%,transparent 60%);background-attachment:fixed}</style><link rel="stylesheet" href="styles-P5C3BCLG.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-P5C3BCLG.css"></noscript></head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="boot-loader" role="status" aria-live="polite">
+      <div class="boot-loader__inner">
+        <div class="boot-loader__spinner" aria-hidden="true"></div>
+        <div class="boot-loader__text">
+          <span>Egy pillanat</span>
+          <span class="boot-loader__dots" aria-hidden="true">
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </app-root>
 <link rel="modulepreload" href="chunk-KRQU4I3X.js"><link rel="modulepreload" href="chunk-UMO3NRQW.js"><script src="main-L654VKXF.js" type="module"></script></body>
 </html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --surface: #fefaf6;
+      --elevated: #ffffff;
+      --fg: #1a1a2e;
+      --fg-muted: #8b7e6a;
+      --accent: #9b5d73;
+      --ring: rgba(155, 93, 115, 0.15);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --surface: #1a1a2e;
+        --elevated: #2d2d44;
+        --fg: #f0f0f0;
+        --fg-muted: #a8a29e;
+        --accent: #e8c9a0;
+        --ring: rgba(232, 201, 160, 0.15);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--surface);
+      color: var(--fg);
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .loader {
+      text-align: center;
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      border: 3px solid var(--ring);
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-family: 'Poppins', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 1.125rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .dots {
+      display: inline-flex;
+      width: 2.5ch;
+      justify-content: flex-start;
+      white-space: nowrap;
+      margin-left: .2rem;
+    }
+
+    .dots span {
+      opacity: 0;
+      color: var(--accent);
+    }
+
+    .dots span:nth-child(1) {
+      animation: dot1 1.5s steps(1) infinite;
+    }
+    .dots span:nth-child(2) {
+      animation: dot2 1.5s steps(1) infinite;
+    }
+    .dots span:nth-child(3) {
+      animation: dot3 1.5s steps(1) infinite;
+    }
+
+    @keyframes dot1 {
+      0%, 100% { opacity: 0; }
+      25%, 75% { opacity: 1; }
+    }
+
+    @keyframes dot2 {
+      0%, 25%, 100% { opacity: 0; }
+      50%, 75% { opacity: 1; }
+    }
+
+    @keyframes dot3 {
+      0%, 50%, 100% { opacity: 0; }
+      75% { opacity: 1; }
+    }
+
+    .brand {
+      margin-top: 0.75rem;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.75rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="loader-text">
+      <span>Egy pillanat</span><span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>
+    </div>
+  </div>
+</body>
+</html>
