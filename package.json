@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npm install --prefix app",
     "start": "npm start --prefix app",
-    "build": "npm run build --prefix app -- --base-href /lagzilens/",
+    "build": "npm run build --prefix app -- --base-href /lagzilens/ && rm -rf docs && mkdir docs && cp -rf ./app/dist/lagzilens/browser ./docs",
     "watch": "npm run watch --prefix app",
     "test": "npm test --prefix app",
     "deploy": "npm run build && echo 'Deploy via GitHub Pages workflow or angular-cli-ghpages'"
