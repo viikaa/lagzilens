@@ -1,0 +1,234 @@
+<div class="min-h-screen bg-stone-50 text-stone-800">
+  <main class="mx-auto max-w-md px-4 py-8">
+    <!-- Header -->
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-bold text-rose-600">Bogi & Viktor</h1>
+      <p class="text-sm text-stone-500">Oszd meg velünk az esküvő pillanatait!</p>
+
+      <div *ngIf="guestName()" class="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 shadow-sm">
+        <span class="text-xs text-stone-500">Feltöltő:</span>
+        <span class="text-xs font-medium text-stone-700">{{ guestName() }}</span>
+        <button
+          (click)="openNameModal()"
+          class="text-xs text-rose-600 underline hover:text-rose-700"
+          type="button"
+        >
+          Név módosítása
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input
+      #cameraInput
+      type="file"
+      accept="image/*"
+      capture="environment"
+      class="hidden"
+      (change)="onFilesSelected($event)"
+    />
+    <input
+      #galleryInput
+      type="file"
+      accept="image/*"
+      multiple
+      class="hidden"
+      (change)="onFilesSelected($event)"
+    />
+
+    <!-- Camera / Gallery actions -->
+    <div class="flex flex-col gap-4">
+      <button
+        type="button"
+        (click)="takePhoto(cameraInput)"
+        class="flex items-center justify-center gap-3 rounded-xl bg-rose-600 px-6 py-4 text-lg font-semibold text-white shadow transition hover:bg-rose-700 active:scale-95"
+      >
+        <span aria-hidden="true">📸</span>
+        <span>Élő fotó készítése</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="chooseFromGallery(galleryInput)"
+        class="flex items-center justify-center gap-3 rounded-xl bg-stone-800 px-6 py-4 text-lg font-semibold text-white shadow transition hover:bg-stone-900 active:scale-95"
+      >
+        <span aria-hidden="true">🖼️</span>
+        <span>Képek kiválasztása galériából</span>
+      </button>
+    </div>
+
+    <p class="mt-3 text-center text-xs text-stone-400">
+      JPEG, PNG, HEIC · max 20 MB
+    </p>
+
+    <!-- Global Progress -->
+    <div class="mt-6" *ngIf="items().length > 0">
+      <div class="mb-1 flex justify-between text-sm font-medium">
+        <span>Összesített folyamat</span>
+        <span>{{ overallProgress() }}%</span>
+      </div>
+      <div class="h-3 w-full overflow-hidden rounded-full bg-stone-200">
+        <div
+          class="h-full rounded-full bg-rose-500 transition-all duration-300"
+          [style.width.%]="overallProgress()"
+        ></div>
+      </div>
+      <p class="mt-1 text-xs text-stone-500">
+        Kész: {{ completedCount() }} / {{ items().length }}
+        <span *ngIf="errorCount() > 0" class="ml-2 text-red-500">Hiba: {{ errorCount() }}</span>
+      </p>
+    </div>
+
+    <!-- Thumbnail Grid -->
+    <ul class="mt-6 grid grid-cols-3 gap-2">
+      <li
+        *ngFor="let item of items()"
+        class="relative aspect-square overflow-hidden rounded-xl bg-stone-200 shadow-sm"
+      >
+        <!-- Preview for supported formats -->
+        <img
+          *ngIf="!item.isHeic"
+          [src]="item.previewUrl"
+          [alt]="item.generatedFileName"
+          class="h-full w-full object-cover"
+        />
+
+        <!-- HEIC fallback placeholder -->
+        <div
+          *ngIf="item.isHeic"
+          class="flex h-full w-full flex-col items-center justify-center gap-1 bg-stone-100 p-2 text-center"
+        >
+          <svg
+            class="h-12 w-12 text-stone-400"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <rect
+              x="10"
+              y="16"
+              width="44"
+              height="32"
+              rx="5"
+              stroke="currentColor"
+              stroke-width="3"
+            />
+            <circle
+              cx="24"
+              cy="30"
+              r="6"
+              stroke="currentColor"
+              stroke-width="3"
+            />
+            <path
+              d="M14 44L26 34L32 40L40 30L50 42V44C50 47.3137 47.3137 50 44 50H16C12.6863 50 10 47.3137 10 44V42L14 44Z"
+              fill="currentColor"
+              opacity="0.2"
+            />
+          </svg>
+          <span class="text-[10px] font-semibold leading-tight text-stone-500">
+            iOS fotó
+          </span>
+        </div>
+
+        <!-- Remove button -->
+        <button
+          *ngIf="item.upload.status !== 'uploading'"
+          (click)="removeItem(item.id)"
+          class="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-xs text-white transition hover:bg-black/70"
+          aria-label="Remove file"
+        >
+          ✕
+        </button>
+
+        <!-- Upload progress bar -->
+        <div
+          *ngIf="item.upload.status === 'uploading'"
+          class="absolute bottom-0 left-0 right-0 h-1.5 bg-stone-900/20"
+        >
+          <div
+            class="h-full bg-rose-500 transition-all duration-300"
+            [style.width.%]="item.upload.progress"
+          ></div>
+        </div>
+
+        <!-- Done overlay -->
+        <div
+          *ngIf="item.upload.status === 'done'"
+          class="absolute inset-0 flex items-center justify-center bg-black/40 text-white"
+        >
+          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <!-- Error indicator -->
+        <div
+          *ngIf="item.upload.status === 'error'"
+          class="absolute bottom-1 left-1 right-1 rounded bg-red-500 px-1 py-0.5 text-center text-[9px] font-medium text-white"
+        >
+          Hiba
+        </div>
+      </li>
+    </ul>
+
+    <!-- Actions -->
+    <div class="mt-6 flex gap-3" *ngIf="items().length > 0">
+      <button
+        (click)="startUpload()"
+        [disabled]="isUploading()"
+        class="flex-1 rounded-xl bg-rose-600 py-3 font-semibold text-white shadow transition hover:bg-rose-700 disabled:opacity-50"
+      >
+        {{ isUploading() ? 'Feltöltés...' : 'Feltöltés' }}
+      </button>
+      <button
+        (click)="reset()"
+        [disabled]="isUploading()"
+        class="rounded-xl bg-stone-200 px-4 py-3 font-medium text-stone-700 transition hover:bg-stone-300 disabled:opacity-50"
+      >
+        Törlés
+      </button>
+    </div>
+  </main>
+</div>
+
+<!-- Name Input Modal -->
+<div
+  *ngIf="isNameModalOpen()"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm"
+>
+  <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+    <h2 class="text-xl font-bold text-stone-800">Hogyan szólíthatunk?</h2>
+    <p class="mt-1 text-sm text-stone-500">
+      Add meg a neved, hogy tudjuk, kitől kaptuk a képeket.
+    </p>
+
+    <form [formGroup]="nameForm" (ngSubmit)="submitName()" class="mt-5">
+      <label for="guestName" class="sr-only">Név</label>
+      <input
+        id="guestName"
+        type="text"
+        formControlName="name"
+        placeholder="Például: Bogi & Viktor"
+        class="w-full rounded-xl border border-stone-300 px-4 py-3 text-stone-800 placeholder-stone-400 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-200"
+        autocomplete="name"
+      />
+
+      <p
+        *ngIf="nameForm.get('name')?.invalid && nameForm.get('name')?.touched"
+        class="mt-2 text-xs text-red-500"
+      >
+        A névnek legalább 2 karakterből kell állnia.
+      </p>
+
+      <button
+        type="submit"
+        [disabled]="nameForm.invalid"
+        class="mt-4 w-full rounded-xl bg-rose-600 py-3 font-semibold text-white shadow transition hover:bg-rose-700 disabled:opacity-50"
+      >
+        Tovább a feltöltéshez
+      </button>
+    </form>
+  </div>
+</div>

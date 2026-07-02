@@ -1,0 +1,10 @@
+curl -v -X POST \
+  -H 'Content-Type: text/plain' \
+  -d '{"action":"validateToken","token":"test"}' \
+  https://script.google.com/macros/s/AKfycbwlEvCOt-sNmHpprEOBI0sWOe2-5jLcvi0i9ONxovnQyXhRazWtyoZJEHWZhwlSwLw_/exec \
+  2>&1 | grep -i location
+
+curl -i -X POST \
+  -H 'Content-Type: text/plain' \
+  -d '{"action":"validateToken","token":"test"}' \
+  https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnS8lyf40o_49tJkilULppfHeIGlzrTZWv_BciUFtVUeI5DemiIE43OAuzOz8kEXe4A53vS0hged-1La7pAnJODaTKcT9t_vt1U9nHvWFoSiGs_YIo-2mLlZKp4Sz8aGwsrUY9Yrdg9tF-X8Xg8f42v7KDj-jJ_V-3Gt855qREtLzGq5aHJZjcDku4yw09eqrgK7rblRvVHxiwusoktcyBousiWhyOfgY_JB2AAi9eJHisMo1Ovte3z5CV6O7BcP8LMPnDKSjP6LIy5jXPfkOpoXJ4l8fQ&lib=MkVUboD4d_QZTd7qZgh0NLXU59Q_AFCRH

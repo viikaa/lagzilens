@@ -1,0 +1,18 @@
+{
+  "name": "lagzilens",
+  "version": "0.1.0",
+  "description": "Wedding photo sharing SPA for Bogi & Viktor",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix app",
+    "start": "npm start --prefix app",
+    "build": "npm run build --prefix app -- --base-href /lagzilens/",
+    "watch": "npm run watch --prefix app",
+    "test": "npm test --prefix app",
+    "deploy": "npm run build && echo 'Deploy via GitHub Pages workflow or angular-cli-ghpages'"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  }
+}
