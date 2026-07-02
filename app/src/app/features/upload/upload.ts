@@ -13,6 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UploadFile } from '../../core/models/upload.model';
 import { GuestNameService } from '../../core/services/guest-name.service';
@@ -23,13 +24,6 @@ import {
   detectImageType,
 } from '../../core/utils/image-type.util';
 
-/**
- * Queue identity wrapper.
- *
- * Keeping the queue ID separate from UploadFile makes it easy to drop the ID
- * concept later (e.g. switch to index-based tracking) without touching the
- * upload model or the service layer.
- */
 interface UploadQueueItem {
   id: string;
   upload: UploadFile;
@@ -69,13 +63,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     ],
   });
 
-  overallProgress = computed(() => {
-    const list = this.items();
-    if (list.length === 0) return 0;
-    return Math.round(
-      list.reduce((acc, item) => acc + item.upload.progress, 0) / list.length
-    );
-  });
+  uploadingCount = computed(
+    () => this.items().filter((item) => item.upload.status === 'uploading').length
+  );
 
   completedCount = computed(
     () => this.items().filter((item) => item.upload.status === 'done').length
@@ -83,6 +73,12 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   errorCount = computed(
     () => this.items().filter((item) => item.upload.status === 'error').length
+  );
+
+  allDone = computed(
+    () =>
+      this.items().length > 0 &&
+      this.completedCount() === this.items().length
   );
 
   ngOnInit(): void {
@@ -191,7 +187,6 @@ export class UploadComponent implements OnInit, OnDestroy {
     );
     if (pendingOrError.length === 0) return;
 
-    // Reset failed items to pending so the user can retry them.
     this.items.update((list) =>
       list.map((item) =>
         item.upload.status === 'error'
@@ -219,7 +214,6 @@ export class UploadComponent implements OnInit, OnDestroy {
   private async uploadSingle(item: UploadQueueItem): Promise<void> {
     this.updateUpload(item.id, {
       status: 'uploading',
-      progress: 0,
       errorMessage: undefined,
     });
 
@@ -235,15 +229,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         base64String: base64.split(',')[1],
       };
 
-      await new Promise<void>((resolve, reject) => {
-        this.uploadService.uploadImage(payload).subscribe({
-          next: (event) => {
-            this.updateUpload(item.id, { progress: event.progress });
-            if (event.response) resolve();
-          },
-          error: (err) => reject(err),
-        });
-      });
+      await lastValueFrom(this.uploadService.uploadImage(payload));
 
       this.updateUpload(item.id, { status: 'done', progress: 100 });
     } catch (err: any) {
@@ -268,7 +254,9 @@ export class UploadComponent implements OnInit, OnDestroy {
   private updateUpload(id: string, patch: Partial<UploadFile>): void {
     this.items.update((list) =>
       list.map((item) =>
-        item.id === id ? { ...item, upload: { ...item.upload, ...patch } } : item
+        item.id === id
+          ? { ...item, upload: { ...item.upload, ...patch } }
+          : item
       )
     );
   }

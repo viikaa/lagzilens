@@ -61,22 +61,32 @@
       JPEG, PNG, HEIC · max 20 MB
     </p>
 
-    <!-- Global Progress -->
+    <!-- Upload Status -->
     <div class="mt-6" *ngIf="items().length > 0">
-      <div class="mb-1 flex justify-between text-sm font-medium">
-        <span>Összesített folyamat</span>
-        <span>{{ overallProgress() }}%</span>
-      </div>
-      <div class="h-3 w-full overflow-hidden rounded-full bg-stone-200">
+      <div class="flex items-center gap-2 text-sm">
         <div
-          class="h-full rounded-full bg-rose-500 transition-all duration-300"
-          [style.width.%]="overallProgress()"
+          *ngIf="isUploading()"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-rose-500 border-t-transparent"
         ></div>
+        <svg
+          *ngIf="allDone()"
+          class="h-4 w-4 text-emerald-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+        </svg>
+        <span [class.text-emerald-700]="allDone()" [class.font-medium]="allDone()">
+          {{ allDone() ? 'Minden kép feltöltve!' : 'Feltöltés folyamatban...' }}
+        </span>
+        <span class="text-stone-400">
+          ({{ completedCount() }} / {{ items().length }})
+        </span>
+        <span *ngIf="errorCount() > 0" class="text-red-500">
+          · {{ errorCount() }} hiba
+        </span>
       </div>
-      <p class="mt-1 text-xs text-stone-500">
-        Kész: {{ completedCount() }} / {{ items().length }}
-        <span *ngIf="errorCount() > 0" class="ml-2 text-red-500">Hiba: {{ errorCount() }}</span>
-      </p>
     </div>
 
     <!-- Thumbnail Grid -->
@@ -142,15 +152,12 @@
           ✕
         </button>
 
-        <!-- Upload progress bar -->
+        <!-- Upload spinner overlay -->
         <div
           *ngIf="item.upload.status === 'uploading'"
-          class="absolute bottom-0 left-0 right-0 h-1.5 bg-stone-900/20"
+          class="absolute inset-0 flex items-center justify-center bg-black/30"
         >
-          <div
-            class="h-full bg-rose-500 transition-all duration-300"
-            [style.width.%]="item.upload.progress"
-          ></div>
+          <div class="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
         </div>
 
         <!-- Done overlay -->
